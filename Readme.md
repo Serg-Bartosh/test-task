@@ -1,30 +1,55 @@
 # Scraper and FlaskAPI Product Data Service
 
-## Description
+## Overview
 
-This project includes:
-1. **ScraperProductDataExtractor** — a class for scraping product data from McDonald's website.
-2. **JSONDataSaver** — a class for saving product data into a JSON file.
-3. **FlaskAPI Application** — provides an API for working with product data stored in the JSON file.
+This project consists of three main components:
 
-## Installation and Setup
+1. **ScraperProductDataExtractor**: A class responsible for scraping product data from McDonald's website.
+2. **JSONDataSaver**: A class for saving the scraped product data into a JSON file.
+3. **FlaskAPI**: A RESTful API that provides endpoints for accessing the product data stored in the JSON file.
 
-### 1. Installing Dependencies
+## Installation
 
-Before starting, make sure all necessary libraries are installed. You can install them using `pip`:
+### Step 1: Install Dependencies
+
+Ensure you have all the necessary libraries installed. You can install them using the following command:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 2. Start project
+## Running the Project
 
-### 1. Run project
-### 2. Wait until the data is loaded and saved
-### 3. Paste ```flask --app views run``` to terminal
-### 4. Then you can go to the browser on localhost and use endpoints
+**Step 1:** Run the Scraper
 
-#### Endpoints
-##### 1. http://127.0.0.1:5000/all_products/ - will show u all products
-##### 2. http://127.0.0.1:5000/products/{product_name} - will show u product with name = product_name
-##### 3. http://127.0.0.1:5000/products/{product_name}/{fiel} - will show you the field of the selected product
+To start, run the scraping process which will extract product data from McDonald's website and save it into a JSON file.
+
+**Step 2:** Launch the Flask API
+
+Once the data has been successfully scraped and saved, you can start the Flask application by running the following
+command:
+
+```bash
+flask --app views run
+```
+
+**Step 3:** Access the API
+
+The Flask API will be available locally on http://127.0.0.1:5000. You can now interact with the available endpoints
+through your browser or API client.
+API Endpoints
+
+Get All Products:
+Endpoint: /all_products/
+Description: Returns a list of all products.
+Example: http://127.0.0.1:5000/all_products/
+
+Get Product by Name:
+Endpoint: /products/{product_name}
+Description: Returns data for a specific product by its name.
+Example: http://127.0.0.1:5000/products/BigMac
+
+Get Specific Field of a Product:
+Endpoint: /products/{product_name}/{field}
+Description: Returns a specific field of a product.
+Example: http://127.0.0.1:5000/products/BigMac/price
