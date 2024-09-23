@@ -1,14 +1,13 @@
 import json
-
-from lxml.objectify import BoolElement
+from typing import List, Dict
 
 
 class JSONDataSaver:
-    def __init__(self, file_name: str):
-        self.file_name = file_name
-        self.structured_data = []
+    def __init__(self, file_name: str) -> None:
+        self.file_name: str = file_name
+        self.structured_data: List[Dict[str, str]] = []
 
-    def create_structured_data(self, data: [[str]]) -> BoolElement:
+    def create_structured_data(self, data: List[List[str]]) -> bool:
         if len(data) == 0:
             return False
         for item in data:
@@ -27,7 +26,7 @@ class JSONDataSaver:
             self.structured_data.append(product_data)
         return True
 
-    def create_file(self):
+    def create_file(self) -> None:
         if '.json' not in self.file_name:
             self.file_name += ".json"
         try:
