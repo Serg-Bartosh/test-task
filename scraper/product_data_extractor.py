@@ -47,7 +47,8 @@ class ScraperProductDataExtractor:
             self._quit_browser()
 
             try:
-                unsaturated_fats_element = soup.find_all('li', class_='label-item')[0:4]
+                unsaturated_fats_element, sugar_element, salt_element, portion_element = soup.find_all('li',
+                                                                                                       class_='label-item')[0:4]
                 return soup
             except (ValueError, IndexError):
                 retries += 1
