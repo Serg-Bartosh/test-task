@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 from typing import List, Optional
+from dto.product_dto import ProductDto
 
 
 class ProductScraper:
@@ -45,6 +46,9 @@ class ProductScraper:
                 self.driver.implicitly_wait(2)
                 page_source: str = self.driver.page_source
                 soup: BeautifulSoup = BeautifulSoup(page_source, 'html.parser')
+                # Check that the data is loaded so that there are no breakdowns
+                unsaturated_fats_element, sugar_element, salt_element, portion_element = soup.find_all('li',
+                                                                                                       class_='label-item')[0:4]
                 return soup
             except (ValueError, IndexError):
                 retries += 1
@@ -55,7 +59,7 @@ class ProductScraper:
         print(f"Failed to load required elements after 5 attempts: {item_url}")
         return None
 
-    def extract_all_product_data(self, item_url: str) -> Optional[List[str]]:
+    def extract_all_product_data(self, item_url: str) -> Optional[ProductDto]:
         soup: Optional[BeautifulSoup] = self.fetch_item_html(item_url)
         if soup is None:
             return None
@@ -74,9 +78,19 @@ class ProductScraper:
         sugar_value: str = sugar_element.find('span', class_='value').text.strip().split('г')[0].strip()
         salt_value: str = salt_element.find('span', class_='value').text.strip().split('г')[0].strip()
         portion_value: str = portion_element.find('span', class_='value').text.strip().split('г')[0].strip()
-        return [name, description, calories_value, fats_value, carbs_value, proteins_value, unsaturated_fats_value,
-                sugar_value, salt_value, portion_value]
+        return ProductDto(
+            name=name,
+            description=description,
+            calories=calories_value,
+            fats = fats_value,
+            carbs=carbs_value,
+            proteins=proteins_value,
+            unsaturated=unsaturated_fats_value,
+            sugar=sugar_value,
+            salt_value=salt_value,
+            portion=portion_value
+        )
 
-    def collect_items_data(self) -> List[List[str]]:
-        data: List[Optional[List[str]]] = [self.extract_all_product_data(item_url) for item_url in self.items_url]
+    def collect_items_data(self) -> List[Optional[ProductDto]]:
+        data: List[Optional[ProductDto]] = [self.extract_all_product_data(item_url) for item_url in self.items_url]
         return [item for item in data if item]
