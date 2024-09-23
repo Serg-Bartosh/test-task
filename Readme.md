@@ -1,4 +1,4 @@
-# Scraper and FastAPI Product Data Service
+# Scraper and FlaskAPI Product Data Service
 
 ## Description
 
