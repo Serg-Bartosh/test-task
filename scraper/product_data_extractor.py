@@ -64,5 +64,5 @@ class ScraperProductDataExtractor:
                 sugar_value, salt_value, portion_value]
 
     def collect_items_data(self):
-        data = [self.collect_item_data(item_url) for item_url in self.items_url]
+        data = [self.collect_item_data(item_url) for item_url in self.items_url[0:2]]
         return data
