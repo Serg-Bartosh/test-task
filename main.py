@@ -1,13 +1,13 @@
-from scraper.product_data_extractor import ScraperProductDataExtractor
+from scraper.product_data_extractor import ProductScraper
 from saver.json_data_saver import JSONDataSaver
 
 name_js_file: str = 'mcdonalds.json'
 
 
-def parse_and_save_data() -> None:
-    mcdonalds: ScraperProductDataExtractor = ScraperProductDataExtractor(
+def scrape_and_save_menu_data() -> None:
+    mcdonalds: ProductScraper = ProductScraper(
         'https://www.mcdonalds.com/ua/uk-ua/eat/fullmenu.html')
-    mcdonalds.get_items_url()
+    mcdonalds.extract_item_urls()
     data = mcdonalds.collect_items_data()
 
     data_saver: JSONDataSaver = JSONDataSaver(name_js_file)
@@ -16,4 +16,4 @@ def parse_and_save_data() -> None:
 
 
 if __name__ == "__main__":
-    parse_and_save_data()
+    scrape_and_save_menu_data()

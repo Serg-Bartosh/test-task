@@ -6,9 +6,9 @@ from selenium.webdriver.firefox.service import Service
 from typing import List, Optional
 
 
-class ScraperProductDataExtractor:
+class ProductScraper:
     def __init__(self, page_url: str) -> None:
-        self.page_url: str = page_url
+        self.menu_page_url: str = page_url
         self.domain_name: str = urlparse(page_url).scheme + '://' + urlparse(page_url).netloc
         self.items_url: List[str] = []
         self.driver: Optional[webdriver.Firefox] = None
@@ -25,8 +25,8 @@ class ScraperProductDataExtractor:
         if self.driver:
             self.driver.quit()
 
-    def get_items_url(self) -> bool:
-        response = requests.get(self.page_url)
+    def extract_item_urls(self) -> bool:
+        response = requests.get(self.menu_page_url)
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
             menu_items = soup.find_all('li', class_='cmp-category__item')
@@ -36,7 +36,7 @@ class ScraperProductDataExtractor:
         print(f"Error: {response.status_code}")
         return False
 
-    def get_item_html(self, item_url: str) -> Optional[BeautifulSoup]:
+    def fetch_item_html(self, item_url: str) -> Optional[BeautifulSoup]:
         retries: int = 0
         while retries < 5:
             self._start_browser()
@@ -55,8 +55,8 @@ class ScraperProductDataExtractor:
         print(f"Failed to load required elements after 5 attempts: {item_url}")
         return None
 
-    def collect_item_data(self, item_url: str) -> Optional[List[str]]:
-        soup: Optional[BeautifulSoup] = self.get_item_html(item_url)
+    def extract_all_product_data(self, item_url: str) -> Optional[List[str]]:
+        soup: Optional[BeautifulSoup] = self.fetch_item_html(item_url)
         if soup is None:
             return None
         name: str = soup.find('span', class_='cmp-product-details-main__heading-title').text.strip()
@@ -78,5 +78,5 @@ class ScraperProductDataExtractor:
                 sugar_value, salt_value, portion_value]
 
     def collect_items_data(self) -> List[List[str]]:
-        data: List[Optional[List[str]]] = [self.collect_item_data(item_url) for item_url in self.items_url]
-        return [item for item in data if item]  # Remove None values
+        data: List[Optional[List[str]]] = [self.extract_all_product_data(item_url) for item_url in self.items_url]
+        return [item for item in data if item]

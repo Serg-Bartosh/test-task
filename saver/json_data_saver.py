@@ -4,7 +4,7 @@ from typing import List, Dict
 
 class JSONDataSaver:
     def __init__(self, file_name: str) -> None:
-        self.file_name: str = file_name
+        self.file_path: str = file_name
         self.structured_data: List[Dict[str, str]] = []
 
     def create_structured_data(self, data: List[List[str]]) -> bool:
@@ -27,11 +27,11 @@ class JSONDataSaver:
         return True
 
     def create_file(self) -> None:
-        if '.json' not in self.file_name:
-            self.file_name += ".json"
+        if '.json' not in self.file_path:
+            self.file_path += ".json"
         try:
-            with open(self.file_name, 'w', encoding='utf-8') as json_file:
+            with open(self.file_path, 'w', encoding='utf-8') as json_file:
                 json.dump(self.structured_data, json_file, ensure_ascii=False, indent=4)
-            print(f"Data successfully saved to {self.file_name}")
+            print(f"Data successfully saved to {self.file_path}")
         except Exception as e:
             print(f"Failed to save data: {e}")
