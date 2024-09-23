@@ -13,19 +13,19 @@ class JSONDataSaver:
             return False
         for item in data:
             product_data = {
-                "name": item[0],
-                "description": item[1],
-                "calories": item[2],
-                "fats": item[3],
-                "carbohydrates": item[4],
-                "proteins": item[5],
-                "unsaturated_fats": item[6],
-                "sugar": item[7],
-                "salt": item[8],
-                "portion": item[9]
+                "name": item[0].lower(),
+                "description": item[1].lower(),
+                "calories": item[2].lower() + " kcal",
+                "fats": item[3].lower() + "g",
+                "carbohydrates": item[4].lower() + "g",
+                "proteins": item[5].lower() + "g",
+                "unsaturated_fats": item[6].lower() + "g",
+                "sugar": item[7].lower() + "g",
+                "salt": item[8].lower() + "g",
+                "portion": item[9].lower() + "g"
             }
             self.structured_data.append(product_data)
-            return True
+        return True
 
     def create_file(self):
         if '.json' not in self.file_name:
