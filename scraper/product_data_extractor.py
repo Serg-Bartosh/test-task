@@ -40,19 +40,21 @@ class ScraperProductDataExtractor:
         retries = 0
         while retries < 5:
             self._start_browser()
-            self.driver.get(item_url)
-            self.driver.implicitly_wait(2)
-            page_source = self.driver.page_source
-            soup = BeautifulSoup(page_source, 'html.parser')
-            self._quit_browser()
-
             try:
+                self.driver.get(item_url)
+                self.driver.implicitly_wait(2)
+                page_source = self.driver.page_source
+                soup = BeautifulSoup(page_source, 'html.parser')
+
                 unsaturated_fats_element, sugar_element, salt_element, portion_element = soup.find_all('li',
                                                                                                        class_='label-item')[0:4]
                 return soup
             except (ValueError, IndexError):
                 retries += 1
                 print(f"Error: Elements not found on {item_url}. Retrying... ({retries}/5)")
+            finally:
+                self._quit_browser()
+
         print(f"Failed to load required elements after 5 attempts: {item_url}")
         return None
 

@@ -8,7 +8,7 @@ class JSONDataSaver:
         self.file_name = file_name
         self.structured_data = []
 
-    def create_structured_data(self, data: [[str, ]]) -> BoolElement:
+    def create_structured_data(self, data: [[str]]) -> BoolElement:
         if len(data) == 0:
             return False
         for item in data:
