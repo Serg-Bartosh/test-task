@@ -1,9 +1,11 @@
 import json
 from urllib.parse import unquote
-
-from fastapi import FastAPI, HTTPException
+from flask import Flask, jsonify, abort
 from main import name_js_file
-app = FastAPI()
+
+app = Flask(__name__)
+
+name_js_file = name_js_file
 
 
 def load_products_from_file(file_path: str):
@@ -18,7 +20,7 @@ def load_products_from_file(file_path: str):
         return {}
 
 
-products = load_products_from_file(f'{name_js_file}')
+products = load_products_from_file(name_js_file)
 
 
 def find_product_by_name(product_name: str):
@@ -28,32 +30,32 @@ def find_product_by_name(product_name: str):
     return None
 
 
-@app.get("/all_products/")
+@app.route("/all_products/", methods=['GET'])
 def get_all_products():
     if not products:
-        raise HTTPException(status_code=404, detail="No products found")
-    return products
+        abort(404, description="No products found")
+    return jsonify(products)
 
 
-@app.get("/products/{product_name}")
+@app.route("/products/<product_name>", methods=['GET'])
 def get_product(product_name: str):
     product_name = unquote(product_name)
     product = find_product_by_name(product_name)
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+        abort(404, description="Product not found")
+    return jsonify(product)
 
 
-@app.get("/products/{product_name}/{product_field}")
+@app.route("/products/<product_name>/<product_field>", methods=['GET'])
 def get_product_field(product_name: str, product_field: str):
     product_name = unquote(product_name)
     product = find_product_by_name(product_name)
     product_field = unquote(product_field)
 
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        abort(404, description="Product not found")
 
     field_value = product.get(product_field.lower())
     if field_value is None:
-        raise HTTPException(status_code=404, detail="Field not found")
-    return {product_field: field_value}
+        abort(404, description="Field not found")
+    return jsonify({product_field: field_value})
