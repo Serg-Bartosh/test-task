@@ -1,7 +1,8 @@
 import json
-from fastapi import FastAPI, HTTPException
 from urllib.parse import unquote
 
+from fastapi import FastAPI, HTTPException
+from main import name_js_file
 app = FastAPI()
 
 
@@ -17,7 +18,7 @@ def load_products_from_file(file_path: str):
         return {}
 
 
-products = load_products_from_file('saver/mc_data.json')
+products = load_products_from_file(f'{name_js_file}')
 
 
 def find_product_by_name(product_name: str):
