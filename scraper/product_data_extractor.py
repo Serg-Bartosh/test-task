@@ -37,15 +37,28 @@ class ScraperProductDataExtractor:
         return False
 
     def get_item_html(self, item_url):
-        self._start_browser()
-        self.driver.get(item_url)
-        page_source = self.driver.page_source
-        soup = BeautifulSoup(page_source, 'html.parser')
-        self._quit_browser()
-        return soup
+        retries = 0
+        while retries < 5:
+            self._start_browser()
+            self.driver.get(item_url)
+            self.driver.implicitly_wait(2)
+            page_source = self.driver.page_source
+            soup = BeautifulSoup(page_source, 'html.parser')
+            self._quit_browser()
+
+            try:
+                unsaturated_fats_element = soup.find_all('li', class_='label-item')[0:4]
+                return soup
+            except (ValueError, IndexError):
+                retries += 1
+                print(f"Error: Elements not found on {item_url}. Retrying... ({retries}/5)")
+        print(f"Failed to load required elements after 5 attempts: {item_url}")
+        return None
 
     def collect_item_data(self, item_url):
         soup = self.get_item_html(item_url)
+        if soup is None:
+            return None
         name = soup.find('span', class_='cmp-product-details-main__heading-title').text.strip()
         description = soup.find('div', class_='cmp-text').text.strip().replace('\xa0', ' ').replace('\n', '')
         calories_element, fats_element, carbs_element, proteins_element = soup.find_all('li',
@@ -64,5 +77,5 @@ class ScraperProductDataExtractor:
                 sugar_value, salt_value, portion_value]
 
     def collect_items_data(self):
-        data = [self.collect_item_data(item_url) for item_url in self.items_url[0:2]]
+        data = [self.collect_item_data(item_url) for item_url in self.items_url]
         return data
