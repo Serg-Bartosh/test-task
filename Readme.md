@@ -5,7 +5,7 @@
 This project includes:
 1. **ScraperProductDataExtractor** — a class for scraping product data from McDonald's website.
 2. **JSONDataSaver** — a class for saving product data into a JSON file.
-3. **FastAPI Application** — provides an API for working with product data stored in the JSON file.
+3. **FlaskAPI Application** — provides an API for working with product data stored in the JSON file.
 
 ## Installation and Setup
 
